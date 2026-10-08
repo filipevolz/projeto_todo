@@ -301,11 +301,11 @@ T12
 
 **Done when**:
 
-- [ ] `pendente` can become `concluido` and `concluido` can become `pendente`, each with 200 and a later `updated_at`
-- [ ] Any other status returns 422 and leaves the row unchanged
-- [ ] A missing id returns 404 with detail `O ID {id} não foi encontrado`
-- [ ] Gate check passes: `python3 -m pytest -q`
-- [ ] Test count: 24 tests pass (no silent deletions)
+- [x] `pendente` can become `concluido` and `concluido` can become `pendente`, each with 200 and a later `updated_at`
+- [x] Any other status returns 422 and leaves the row unchanged
+- [x] A missing id returns 404 with detail `O ID {id} não foi encontrado`
+- [x] Gate check passes: `python3 -m pytest -q`
+- [x] Test count: 24 tests pass (no silent deletions)
 
 **Tests**: integration
 **Gate**: full

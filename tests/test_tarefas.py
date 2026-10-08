@@ -280,6 +280,79 @@ def test_put_breaking_bounds_returns_422_and_keeps_row(client):
     assert client.get(task_url).json() == stored
 
 
+def test_patch_status_from_pendente_to_concluido(client):
+    created = client.post(
+        "/tarefas", json={"title": "fazer", "description": "agora"}
+    )
+    assert created.status_code == 201
+    stored = created.json()
+    assert stored["status"] == "pendente"
+    response = client.patch(
+        "/tarefas/" + str(stored["id"]) + "/status",
+        json={"status": "concluido"},
+    )
+    assert response.status_code == 200
+    body = response.json()
+    assert body["status"] == "concluido"
+    assert datetime.fromisoformat(body["updated_at"]) > datetime.fromisoformat(
+        stored["updated_at"]
+    )
+    persisted = client.get("/tarefas/" + str(stored["id"]))
+    assert persisted.status_code == 200
+    assert persisted.json()["status"] == "concluido"
+
+
+def test_patch_status_from_concluido_to_pendente(client):
+    created = client.post(
+        "/tarefas", json={"title": "voltar", "description": "status"}
+    )
+    assert created.status_code == 201
+    task_id = created.json()["id"]
+    done = client.patch(
+        "/tarefas/" + str(task_id) + "/status",
+        json={"status": "concluido"},
+    )
+    assert done.status_code == 200
+    assert done.json()["status"] == "concluido"
+    response = client.patch(
+        "/tarefas/" + str(task_id) + "/status",
+        json={"status": "pendente"},
+    )
+    assert response.status_code == 200
+    body = response.json()
+    assert body["status"] == "pendente"
+    assert datetime.fromisoformat(body["updated_at"]) > datetime.fromisoformat(
+        done.json()["updated_at"]
+    )
+    persisted = client.get("/tarefas/" + str(task_id))
+    assert persisted.status_code == 200
+    assert persisted.json()["status"] == "pendente"
+
+
+def test_patch_other_status_returns_422_and_keeps_row(client):
+    created = client.post(
+        "/tarefas", json={"title": "invalido", "description": "status"}
+    )
+    assert created.status_code == 201
+    stored = created.json()
+    response = client.patch(
+        "/tarefas/" + str(stored["id"]) + "/status",
+        json={"status": "fazendo"},
+    )
+    assert response.status_code == 422
+    assert client.get("/tarefas/" + str(stored["id"])).json() == stored
+
+
+def test_patch_missing_id_returns_404(client):
+    missing_id = 2147483645
+    response = client.patch(
+        "/tarefas/" + str(missing_id) + "/status",
+        json={"status": "concluido"},
+    )
+    assert response.status_code == 404
+    assert response.json()["detail"] == f"O ID {missing_id} não foi encontrado"
+
+
 def test_import_does_not_read_stdin_or_print_menu():
     result = subprocess.run(
         [sys.executable, "-c", "import main"],

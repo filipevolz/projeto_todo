@@ -1,4 +1,5 @@
 from contextlib import asynccontextmanager
+from typing import Literal
 
 from fastapi import Depends, FastAPI, HTTPException
 from psycopg.rows import dict_row
@@ -49,6 +50,10 @@ class TarefaCreate(BaseModel):
     @classmethod
     def title_not_whitespace(cls, value):
         return reject_blank_title(value)
+
+
+class StatusBody(BaseModel):
+    status: Literal["pendente", "concluido"]
 
 
 class TarefaReplace(BaseModel):
@@ -138,6 +143,27 @@ def atualizar_tarefa(
         RETURNING id, title, description, status, created_at, updated_at
         """,
         (body.title, body.description, task_id),
+    )
+    row = cursor.fetchone()
+    cursor.close()
+    if row is None:
+        not_found(task_id)
+    return serialize(row)
+
+
+@app.patch("/tarefas/{task_id}/status")
+def alterar_status(
+    task_id: int, body: StatusBody, connection=Depends(get_connection)
+):
+    cursor = connection.execute(
+        """
+        UPDATE tarefas
+        SET status = %s,
+            updated_at = clock_timestamp()
+        WHERE id = %s
+        RETURNING id, title, description, status, created_at, updated_at
+        """,
+        (body.status, task_id),
     )
     row = cursor.fetchone()
     cursor.close()
