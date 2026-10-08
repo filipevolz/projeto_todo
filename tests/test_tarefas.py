@@ -172,6 +172,29 @@ def test_second_client_sees_task_from_the_database(client):
     assert not any(isinstance(value, list) for value in vars(main).values())
 
 
+def test_get_existing_id_returns_that_task(client):
+    created = client.post(
+        "/tarefas", json={"title": "buscar", "description": "uma"}
+    )
+    assert created.status_code == 201
+    task = created.json()
+    response = client.get("/tarefas/" + str(task["id"]))
+    assert response.status_code == 200
+    assert response.json() == task
+
+
+def test_get_missing_id_returns_404(client):
+    missing_id = 2147483647
+    response = client.get("/tarefas/" + str(missing_id))
+    assert response.status_code == 404
+    assert response.json()["detail"] == f"O ID {missing_id} não foi encontrado"
+
+
+def test_get_non_integer_id_returns_422(client):
+    response = client.get("/tarefas/abc")
+    assert response.status_code == 422
+
+
 def test_import_does_not_read_stdin_or_print_menu():
     result = subprocess.run(
         [sys.executable, "-c", "import main"],

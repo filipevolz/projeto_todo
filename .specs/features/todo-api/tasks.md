@@ -245,11 +245,11 @@ T12
 
 **Done when**:
 
-- [ ] An existing id returns 200 and that task
-- [ ] A missing id returns 404 with detail `O ID {id} não foi encontrado`
-- [ ] `GET /tarefas/abc` returns 422
-- [ ] Gate check passes: `python3 -m pytest -q`
-- [ ] Test count: 15 tests pass (no silent deletions)
+- [x] An existing id returns 200 and that task
+- [x] A missing id returns 404 with detail `O ID {id} não foi encontrado`
+- [x] `GET /tarefas/abc` returns 422
+- [x] Gate check passes: `python3 -m pytest -q`
+- [x] Test count: 15 tests pass (no silent deletions)
 
 **Tests**: integration
 **Gate**: full

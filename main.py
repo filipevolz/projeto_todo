@@ -1,6 +1,6 @@
 from contextlib import asynccontextmanager
 
-from fastapi import Depends, FastAPI
+from fastapi import Depends, FastAPI, HTTPException
 from psycopg.rows import dict_row
 from pydantic import BaseModel, Field, field_validator
 
@@ -47,6 +47,12 @@ class TarefaCreate(BaseModel):
         return value
 
 
+def not_found(task_id):
+    raise HTTPException(
+        status_code=404, detail=f"O ID {task_id} não foi encontrado"
+    )
+
+
 def serialize(row):
     return {
         "id": row["id"],
@@ -85,3 +91,20 @@ def listar_tarefas(connection=Depends(get_connection)):
     rows = cursor.fetchall()
     cursor.close()
     return [serialize(row) for row in rows]
+
+
+@app.get("/tarefas/{task_id}")
+def obter_tarefa(task_id: int, connection=Depends(get_connection)):
+    cursor = connection.execute(
+        """
+        SELECT id, title, description, status, created_at, updated_at
+        FROM tarefas
+        WHERE id = %s
+        """,
+        (task_id,),
+    )
+    row = cursor.fetchone()
+    cursor.close()
+    if row is None:
+        not_found(task_id)
+    return serialize(row)
