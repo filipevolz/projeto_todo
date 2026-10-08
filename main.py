@@ -1,109 +1,73 @@
-from datetime import datetime
+from contextlib import asynccontextmanager
 
-# Projeto TO-DO
+from fastapi import Depends, FastAPI
+from psycopg.rows import dict_row
+from pydantic import BaseModel, Field, field_validator
 
-lista_de_tarefas = []
-proximo_id = 1
+import db
 
-def criar_tarefa(title, description):
-    data_atual = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    global proximo_id
+_schema_ready = False
 
-    nova_tarefa = {
-        "id": proximo_id,
-        "title": title,
-        "description": description,
-        "status": "pendente",
-        "created_at": data_atual,
-        "updated_at": data_atual
+
+@asynccontextmanager
+async def lifespan(_app):
+    global _schema_ready
+    if not _schema_ready:
+        connection = db.connect()
+        connection.close()
+        _schema_ready = True
+    yield
+
+
+app = FastAPI(lifespan=lifespan)
+
+
+def get_connection():
+    connection = db.connect()
+    connection.row_factory = dict_row
+    try:
+        yield connection
+        connection.commit()
+    except Exception:
+        connection.rollback()
+        raise
+    finally:
+        connection.close()
+
+
+class TarefaCreate(BaseModel):
+    title: str = Field(min_length=1, max_length=200)
+    description: str = Field(default="", max_length=2000)
+
+    @field_validator("title")
+    @classmethod
+    def title_not_whitespace(cls, value):
+        if value.strip() == "":
+            raise ValueError("title must not be blank")
+        return value
+
+
+def serialize(row):
+    return {
+        "id": row["id"],
+        "title": row["title"],
+        "description": row["description"],
+        "status": row["status"],
+        "created_at": row["created_at"].isoformat(),
+        "updated_at": row["updated_at"].isoformat(),
     }
 
-    lista_de_tarefas.append(nova_tarefa)
-    proximo_id += 1
-    return nova_tarefa
 
-def obter_tarefas():
-    return lista_de_tarefas
-
-
-def obter_tarefa_por_id(id):
-    for tarefa in lista_de_tarefas:
-        if tarefa["id"] == id:
-            return tarefa
-     
-    return f'O ID {id} não foi encontrado'
-
-def atualizar_tarefa(id, title, description):
-    for tarefa in lista_de_tarefas:
-        if tarefa["id"] == id:
-            tarefa["title"] = title
-            tarefa["description"] = description
-            tarefa["updated_at"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            return tarefa
-
-    return f'O ID {id} não foi encontrado'
-
-def alterar_status_tarefa(id, novo_status):
-    for tarefa in lista_de_tarefas:
-        if tarefa["id"] == id:
-            tarefa["status"] = novo_status
-            tarefa["updated_at"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            return tarefa
-
-    return f'O ID {id} não foi encontrado'
-
-def deletar_tarefa(id):
-    for tarefa in lista_de_tarefas:
-        if tarefa["id"] == id:
-            lista_de_tarefas.remove(tarefa)
-            return f'A tarefa {tarefa["title"]} foi removida com sucesso!'
-        
-    return f'O ID {id} não foi encontrado'
-
-
-while True:
-    print('1 - CRIAR TAREFA')
-    print('2 - LISTAR TAREFA')
-    print('3 - BUSCAR TAREFA')
-    print('4 - ATUALIZAR TAREFA')
-    print('5 - ALTERAR STATUS')
-    print('6 - DELETAR TAREFA')
-    print('7 - SAIR')
-
-    opcao = int(input('Escolha uma opção: '))
-
-    if opcao == 1:
-        titulo = input('Digite o título da tarefa: ')
-        descricao = input('Digite a descrição da tarefa: ')
-
-        tarefa_criada = criar_tarefa(titulo, descricao)
-        print(f'A tarefa {titulo} foi criada com sucesso!')
-
-
-    elif opcao == 2:
-        tarefas = obter_tarefas()
-        print(tarefas)
-
-    elif opcao == 3:
-        id_busca = int(input('Digite o ID da tarefa: '))
-        resultado = obter_tarefa_por_id(id_busca)
-        print(resultado)
-
-    elif opcao == 4:
-        id_atualizar = int(input('Digite o ID da tarefa: '))
-        novo_titulo = input('Digite o novo título: ')
-        nova_descricao = input('Digite a nova descrição: ')
-        print(atualizar_tarefa(id_atualizar, novo_titulo, nova_descricao))
-
-    elif opcao == 5:
-        id_status = int(input('Digite o ID da tarefa: '))
-        novo_status = input('Digite o novo status: ')
-        print(alterar_status_tarefa(id_status, novo_status))
-
-    elif opcao == 6:
-        id_deletar = int(input('Digite o ID da tarefa: '))
-        print(deletar_tarefa(id_deletar))
-
-    elif opcao == 7:
-        print('Saindo do sistema...')
-        break
+@app.post("/tarefas", status_code=201)
+def criar_tarefa(body: TarefaCreate, connection=Depends(get_connection)):
+    cursor = connection.execute(
+        """
+        INSERT INTO tarefas (title, description)
+        VALUES (%s, %s)
+        RETURNING id, title, description, status, created_at, updated_at
+        """,
+        (body.title, body.description),
+    )
+    row = cursor.fetchone()
+    cursor.close()
+    return serialize(row)

@@ -186,13 +186,13 @@ T12
 
 **Done when**:
 
-- [ ] `POST /tarefas` returns 201 with `pendente` and ISO 8601 timestamps
-- [ ] Omitted description is stored as `""`. A duplicate title inserts a new id
-- [ ] Missing, empty, or whitespace title returns 422. Title over 200 or description over 2000 returns 422
-- [ ] Importing the app does not read from stdin and does not print the numbered menu
-- [ ] Each test rolls back its transaction
-- [ ] Gate check passes: `python3 -m pytest -q`
-- [ ] Test count: 9 tests pass (no silent deletions)
+- [x] `POST /tarefas` returns 201 with `pendente` and ISO 8601 timestamps
+- [x] Omitted description is stored as `""`. A duplicate title inserts a new id
+- [x] Missing, empty, or whitespace title returns 422. Title over 200 or description over 2000 returns 422
+- [x] Importing the app does not read from stdin and does not print the numbered menu
+- [x] Each test rolls back its transaction
+- [x] Gate check passes: `python3 -m pytest -q`
+- [x] Test count: 9 tests pass (no silent deletions)
 
 **Tests**: integration
 **Gate**: full

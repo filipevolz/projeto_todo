@@ -195,12 +195,12 @@ O CRUD em `main.py` guarda tarefas numa lista em memória e só existe como menu
 
 | Requirement ID | Story | Phase | Status |
 | --- | --- | --- | --- |
-| TODO-01 | P1: Criar tarefa | Tasks | In Tasks |
-| TODO-02 | P1: Criar tarefa | Tasks | In Tasks |
-| TODO-03 | P1: Criar tarefa | Tasks | In Tasks |
-| TODO-04 | P1: Criar tarefa | Tasks | In Tasks |
-| TODO-05 | P1: Criar tarefa | Tasks | In Tasks |
-| TODO-06 | P1: Criar tarefa | Tasks | In Tasks |
+| TODO-01 | P1: Criar tarefa | Tasks | Done |
+| TODO-02 | P1: Criar tarefa | Tasks | Done |
+| TODO-03 | P1: Criar tarefa | Tasks | Done |
+| TODO-04 | P1: Criar tarefa | Tasks | Done |
+| TODO-05 | P1: Criar tarefa | Tasks | Done |
+| TODO-06 | P1: Criar tarefa | Tasks | Done |
 | TODO-07 | P1: Listar tarefas | Tasks | In Tasks |
 | TODO-08 | P1: Listar tarefas | Tasks | In Tasks |
 | TODO-09 | P1: Listar tarefas | Tasks | In Tasks |
@@ -222,7 +222,7 @@ O CRUD em `main.py` guarda tarefas numa lista em memória e só existe como menu
 | TODO-25 | P1: Persistência e falha do banco | Tasks | In Tasks |
 | TODO-26 | P2: Operador sobe a API | Tasks | Done |
 | TODO-27 | P2: Operador sobe a API | Tasks | In Tasks |
-| TODO-28 | P2: Operador sobe a API | Tasks | In Tasks |
+| TODO-28 | P2: Operador sobe a API | Tasks | Done |
 
 **Coverage:** 28 total, 28 mapped to tasks, 0 unmapped.
 
