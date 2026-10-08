@@ -20,4 +20,5 @@ Aplicação de gerenciamento de tarefas via terminal (CLI) desenvolvida em Pytho
 
 1. Clone o repositório:
    ```bash
-   git clone [https://github.com/teu-usuario/nome-do-repositorio.git](https://github.com/teu-usuario/nome-do-repositorio.git)
+   git clone [https://github.com/janiersoares/projeto_todo.git]
+   (https://github.com/janiersoares/projeto_todo.git)
