@@ -35,6 +35,12 @@ def get_connection():
         connection.close()
 
 
+def reject_blank_title(value):
+    if value.strip() == "":
+        raise ValueError("title must not be blank")
+    return value
+
+
 class TarefaCreate(BaseModel):
     title: str = Field(min_length=1, max_length=200)
     description: str = Field(default="", max_length=2000)
@@ -42,9 +48,17 @@ class TarefaCreate(BaseModel):
     @field_validator("title")
     @classmethod
     def title_not_whitespace(cls, value):
-        if value.strip() == "":
-            raise ValueError("title must not be blank")
-        return value
+        return reject_blank_title(value)
+
+
+class TarefaReplace(BaseModel):
+    title: str = Field(min_length=1, max_length=200)
+    description: str = Field(max_length=2000)
+
+    @field_validator("title")
+    @classmethod
+    def title_not_whitespace(cls, value):
+        return reject_blank_title(value)
 
 
 def not_found(task_id):
@@ -102,6 +116,28 @@ def obter_tarefa(task_id: int, connection=Depends(get_connection)):
         WHERE id = %s
         """,
         (task_id,),
+    )
+    row = cursor.fetchone()
+    cursor.close()
+    if row is None:
+        not_found(task_id)
+    return serialize(row)
+
+
+@app.put("/tarefas/{task_id}")
+def atualizar_tarefa(
+    task_id: int, body: TarefaReplace, connection=Depends(get_connection)
+):
+    cursor = connection.execute(
+        """
+        UPDATE tarefas
+        SET title = %s,
+            description = %s,
+            updated_at = clock_timestamp()
+        WHERE id = %s
+        RETURNING id, title, description, status, created_at, updated_at
+        """,
+        (body.title, body.description, task_id),
     )
     row = cursor.fetchone()
     cursor.close()

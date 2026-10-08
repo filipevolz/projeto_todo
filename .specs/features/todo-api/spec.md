@@ -207,9 +207,9 @@ O CRUD em `main.py` guarda tarefas numa lista em memória e só existe como menu
 | TODO-10 | P1: Buscar tarefa | Tasks | Done |
 | TODO-11 | P1: Buscar tarefa | Tasks | Done |
 | TODO-12 | P1: Buscar tarefa | Tasks | Done |
-| TODO-13 | P1: Atualizar tarefa | Tasks | In Tasks |
-| TODO-14 | P1: Atualizar tarefa | Tasks | In Tasks |
-| TODO-15 | P1: Atualizar tarefa | Tasks | In Tasks |
+| TODO-13 | P1: Atualizar tarefa | Tasks | Done |
+| TODO-14 | P1: Atualizar tarefa | Tasks | Done |
+| TODO-15 | P1: Atualizar tarefa | Tasks | Done |
 | TODO-16 | P1: Alterar status | Tasks | In Tasks |
 | TODO-17 | P1: Alterar status | Tasks | In Tasks |
 | TODO-18 | P1: Alterar status | Tasks | In Tasks |

@@ -273,11 +273,11 @@ T12
 
 **Done when**:
 
-- [ ] A valid PUT returns 200, keeps `status`, and sets `updated_at` later than the stored value
-- [ ] A missing id returns 404 with detail `O ID {id} não foi encontrado`
-- [ ] Omitting title or description, or breaking the create bounds, returns 422 and leaves the row unchanged
-- [ ] Gate check passes: `python3 -m pytest -q`
-- [ ] Test count: 20 tests pass (no silent deletions)
+- [x] A valid PUT returns 200, keeps `status`, and sets `updated_at` later than the stored value
+- [x] A missing id returns 404 with detail `O ID {id} não foi encontrado`
+- [x] Omitting title or description, or breaking the create bounds, returns 422 and leaves the row unchanged
+- [x] Gate check passes: `python3 -m pytest -q`
+- [x] Test count: 20 tests pass (no silent deletions)
 
 **Tests**: integration
 **Gate**: full

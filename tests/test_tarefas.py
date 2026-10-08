@@ -2,6 +2,7 @@ import os
 import re
 import subprocess
 import sys
+from datetime import datetime
 from pathlib import Path
 
 import pytest
@@ -193,6 +194,90 @@ def test_get_missing_id_returns_404(client):
 def test_get_non_integer_id_returns_422(client):
     response = client.get("/tarefas/abc")
     assert response.status_code == 422
+
+
+def test_put_replaces_text_keeps_status_and_moves_updated_at(client):
+    created = client.post(
+        "/tarefas", json={"title": "antes", "description": "velha"}
+    )
+    assert created.status_code == 201
+    stored = created.json()
+    response = client.put(
+        "/tarefas/" + str(stored["id"]),
+        json={"title": "titulo novo", "description": "descricao nova"},
+    )
+    assert response.status_code == 200
+    body = response.json()
+    assert body["id"] == stored["id"]
+    assert body["title"] == "titulo novo"
+    assert body["description"] == "descricao nova"
+    assert body["status"] == stored["status"]
+    assert body["status"] == "pendente"
+    assert datetime.fromisoformat(body["updated_at"]) > datetime.fromisoformat(
+        stored["updated_at"]
+    )
+
+
+def test_put_missing_id_returns_404(client):
+    missing_id = 2147483646
+    response = client.put(
+        "/tarefas/" + str(missing_id),
+        json={"title": "ausente", "description": "nada"},
+    )
+    assert response.status_code == 404
+    assert response.json()["detail"] == f"O ID {missing_id} não foi encontrado"
+
+
+def test_put_omitting_title_returns_422_and_keeps_row(client):
+    created = client.post(
+        "/tarefas", json={"title": "original", "description": "fica"}
+    )
+    assert created.status_code == 201
+    stored = created.json()
+    response = client.put(
+        "/tarefas/" + str(stored["id"]),
+        json={"description": "nova"},
+    )
+    assert response.status_code == 422
+    assert client.get("/tarefas/" + str(stored["id"])).json() == stored
+
+
+def test_put_omitting_description_returns_422_and_keeps_row(client):
+    created = client.post(
+        "/tarefas", json={"title": "original", "description": "fica"}
+    )
+    assert created.status_code == 201
+    stored = created.json()
+    response = client.put(
+        "/tarefas/" + str(stored["id"]),
+        json={"title": "novo titulo"},
+    )
+    assert response.status_code == 422
+    assert client.get("/tarefas/" + str(stored["id"])).json() == stored
+
+
+def test_put_breaking_bounds_returns_422_and_keeps_row(client):
+    created = client.post(
+        "/tarefas", json={"title": "original", "description": "fica"}
+    )
+    assert created.status_code == 201
+    stored = created.json()
+    task_url = "/tarefas/" + str(stored["id"])
+    long_title = client.put(
+        task_url, json={"title": "a" * 201, "description": "ok"}
+    )
+    assert long_title.status_code == 422
+    assert client.get(task_url).json() == stored
+    long_description = client.put(
+        task_url, json={"title": "ok", "description": "d" * 2001}
+    )
+    assert long_description.status_code == 422
+    assert client.get(task_url).json() == stored
+    blank_title = client.put(
+        task_url, json={"title": "   ", "description": "ok"}
+    )
+    assert blank_title.status_code == 422
+    assert client.get(task_url).json() == stored
 
 
 def test_import_does_not_read_stdin_or_print_menu():
