@@ -170,3 +170,20 @@ def alterar_status(
     if row is None:
         not_found(task_id)
     return serialize(row)
+
+
+@app.delete("/tarefas/{task_id}")
+def deletar_tarefa(task_id: int, connection=Depends(get_connection)):
+    cursor = connection.execute(
+        """
+        DELETE FROM tarefas
+        WHERE id = %s
+        RETURNING title
+        """,
+        (task_id,),
+    )
+    row = cursor.fetchone()
+    cursor.close()
+    if row is None:
+        not_found(task_id)
+    return {"message": f"A tarefa {row['title']} foi removida com sucesso!"}

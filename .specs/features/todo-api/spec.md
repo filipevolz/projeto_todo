@@ -215,8 +215,8 @@ O CRUD em `main.py` guarda tarefas numa lista em memória e só existe como menu
 | TODO-18 | P1: Alterar status | Tasks | Done |
 | TODO-19 | P1: Alterar status | Tasks | Done |
 | TODO-20 | P1: Alterar status | Tasks | Done |
-| TODO-21 | P1: Apagar tarefa | Tasks | In Tasks |
-| TODO-22 | P1: Apagar tarefa | Tasks | In Tasks |
+| TODO-21 | P1: Apagar tarefa | Tasks | Done |
+| TODO-22 | P1: Apagar tarefa | Tasks | Done |
 | TODO-23 | P1: Persistência e falha do banco | Tasks | Done |
 | TODO-24 | P1: Persistência e falha do banco | Tasks | Done |
 | TODO-25 | P1: Persistência e falha do banco | Tasks | In Tasks |

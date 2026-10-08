@@ -329,10 +329,10 @@ T12
 
 **Done when**:
 
-- [ ] Deleting an existing id returns 200 with message `A tarefa {title} foi removida com sucesso!` and a following GET returns 404
-- [ ] Deleting a missing id returns 404 with detail `O ID {id} não foi encontrado`
-- [ ] Gate check passes: `python3 -m pytest -q`
-- [ ] Test count: 26 tests pass (no silent deletions)
+- [x] Deleting an existing id returns 200 with message `A tarefa {title} foi removida com sucesso!` and a following GET returns 404
+- [x] Deleting a missing id returns 404 with detail `O ID {id} não foi encontrado`
+- [x] Gate check passes: `python3 -m pytest -q`
+- [x] Test count: 26 tests pass (no silent deletions)
 
 **Tests**: integration
 **Gate**: full

@@ -353,6 +353,33 @@ def test_patch_missing_id_returns_404(client):
     assert response.json()["detail"] == f"O ID {missing_id} não foi encontrado"
 
 
+def test_delete_existing_task_returns_message_and_get_is_404(client):
+    created = client.post(
+        "/tarefas", json={"title": "apagar", "description": "agora"}
+    )
+    assert created.status_code == 201
+    stored = created.json()
+    task_url = "/tarefas/" + str(stored["id"])
+    response = client.delete(task_url)
+    assert response.status_code == 200
+    assert response.json()["message"] == (
+        f"A tarefa {stored['title']} foi removida com sucesso!"
+    )
+    follow = client.get(task_url)
+    assert follow.status_code == 404
+    assert follow.json()["detail"] == f"O ID {stored['id']} não foi encontrado"
+    repeated = client.delete(task_url)
+    assert repeated.status_code == 404
+    assert repeated.json()["detail"] == f"O ID {stored['id']} não foi encontrado"
+
+
+def test_delete_missing_id_returns_404(client):
+    missing_id = 2147483644
+    response = client.delete("/tarefas/" + str(missing_id))
+    assert response.status_code == 404
+    assert response.json()["detail"] == f"O ID {missing_id} não foi encontrado"
+
+
 def test_import_does_not_read_stdin_or_print_menu():
     result = subprocess.run(
         [sys.executable, "-c", "import main"],
