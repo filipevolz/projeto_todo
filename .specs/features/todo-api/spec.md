@@ -221,7 +221,7 @@ O CRUD em `main.py` guarda tarefas numa lista em memória e só existe como menu
 | TODO-24 | P1: Persistência e falha do banco | Tasks | Done |
 | TODO-25 | P1: Persistência e falha do banco | Tasks | Done |
 | TODO-26 | P2: Operador sobe a API | Tasks | Done |
-| TODO-27 | P2: Operador sobe a API | Tasks | In Tasks |
+| TODO-27 | P2: Operador sobe a API | Tasks | Done |
 | TODO-28 | P2: Operador sobe a API | Tasks | Done |
 
 **Coverage:** 28 total, 28 mapped to tasks, 0 unmapped.

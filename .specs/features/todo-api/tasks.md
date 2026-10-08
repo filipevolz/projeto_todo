@@ -385,9 +385,9 @@ T12
 
 **Done when**:
 
-- [ ] README names `DATABASE_URL`, the uvicorn command, and POST /tarefas, GET /tarefas, GET /tarefas/{id}, PUT /tarefas/{id}, PATCH /tarefas/{id}/status, DELETE /tarefas/{id}
-- [ ] README no longer tells the operator to drive the numbered terminal menu
-- [ ] Gate check passes: `python3 -m compileall -q main.py db.py`
+- [x] README names `DATABASE_URL`, the uvicorn command, and POST /tarefas, GET /tarefas, GET /tarefas/{id}, PUT /tarefas/{id}, PATCH /tarefas/{id}/status, DELETE /tarefas/{id}
+- [x] README no longer tells the operator to drive the numbered terminal menu
+- [x] Gate check passes: `python3 -m compileall -q main.py db.py`
 
 **Tests**: none
 **Gate**: build
