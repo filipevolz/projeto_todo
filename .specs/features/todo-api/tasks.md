@@ -356,10 +356,10 @@ T12
 
 **Done when**:
 
-- [ ] A failed connection returns 503 with detail `Banco de dados indisponível`
-- [ ] The response body does not contain `Traceback`
-- [ ] Gate check passes: `python3 -m pytest -q`
-- [ ] Test count: 27 tests pass (no silent deletions)
+- [x] A failed connection returns 503 with detail `Banco de dados indisponível`
+- [x] The response body does not contain `Traceback`
+- [x] Gate check passes: `python3 -m pytest -q`
+- [x] Test count: 27 tests pass (no silent deletions)
 
 **Tests**: integration
 **Gate**: full

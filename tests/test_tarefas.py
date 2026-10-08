@@ -5,6 +5,7 @@ import sys
 from datetime import datetime
 from pathlib import Path
 
+import psycopg
 import pytest
 from fastapi.testclient import TestClient
 from psycopg.rows import dict_row
@@ -378,6 +379,19 @@ def test_delete_missing_id_returns_404(client):
     response = client.delete("/tarefas/" + str(missing_id))
     assert response.status_code == 404
     assert response.json()["detail"] == f"O ID {missing_id} não foi encontrado"
+
+
+def test_database_unavailable_returns_503_without_traceback(monkeypatch):
+    def fail():
+        raise psycopg.OperationalError("connection refused")
+
+    monkeypatch.setattr(db, "connect", fail)
+    app.dependency_overrides.clear()
+    with TestClient(app) as test_client:
+        response = test_client.get("/tarefas")
+    assert response.status_code == 503
+    assert response.json()["detail"] == "Banco de dados indisponível"
+    assert "Traceback" not in response.text
 
 
 def test_import_does_not_read_stdin_or_print_menu():

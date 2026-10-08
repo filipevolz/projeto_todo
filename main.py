@@ -1,7 +1,9 @@
 from contextlib import asynccontextmanager
 from typing import Literal
 
+import psycopg
 from fastapi import Depends, FastAPI, HTTPException
+from fastapi.responses import JSONResponse
 from psycopg.rows import dict_row
 from pydantic import BaseModel, Field, field_validator
 
@@ -10,13 +12,21 @@ import db
 _schema_ready = False
 
 
+class DatabaseUnavailable(Exception):
+    pass
+
+
 @asynccontextmanager
 async def lifespan(_app):
     global _schema_ready
     if not _schema_ready:
-        connection = db.connect()
-        connection.close()
-        _schema_ready = True
+        try:
+            connection = db.connect()
+            connection.close()
+        except psycopg.Error:
+            pass
+        else:
+            _schema_ready = True
     yield
 
 
@@ -24,16 +34,30 @@ app = FastAPI(lifespan=lifespan)
 
 
 def get_connection():
-    connection = db.connect()
+    try:
+        connection = db.connect()
+    except psycopg.Error as exc:
+        raise DatabaseUnavailable from exc
     connection.row_factory = dict_row
     try:
         yield connection
         connection.commit()
+    except psycopg.Error as exc:
+        connection.rollback()
+        raise DatabaseUnavailable from exc
     except Exception:
         connection.rollback()
         raise
     finally:
         connection.close()
+
+
+@app.exception_handler(DatabaseUnavailable)
+def database_unavailable(_request, _exc):
+    return JSONResponse(
+        status_code=503,
+        content={"detail": "Banco de dados indisponível"},
+    )
 
 
 def reject_blank_title(value):
