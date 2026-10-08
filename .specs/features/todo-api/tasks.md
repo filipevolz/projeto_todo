@@ -158,9 +158,9 @@ T12
 
 **Done when**:
 
-- [ ] `db.py` reads `DATABASE_URL` and does not embed a connection string
-- [ ] Startup SQL creates `tarefas` with `status` constrained to `pendente` and `concluido`, and timestamptz defaults for both timestamps
-- [ ] Gate check passes: `python3 -m compileall -q main.py db.py`
+- [x] `db.py` reads `DATABASE_URL` and does not embed a connection string
+- [x] Startup SQL creates `tarefas` with `status` constrained to `pendente` and `concluido`, and timestamptz defaults for both timestamps
+- [x] Gate check passes: `python3 -m compileall -q main.py db.py`
 
 **Tests**: none
 **Gate**: build
