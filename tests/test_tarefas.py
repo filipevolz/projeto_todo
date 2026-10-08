@@ -221,12 +221,19 @@ def test_put_replaces_text_keeps_status_and_moves_updated_at(client):
 
 def test_put_missing_id_returns_404(client):
     missing_id = 2147483646
+    before = client.get("/tarefas")
+    assert before.status_code == 200
     response = client.put(
         "/tarefas/" + str(missing_id),
         json={"title": "ausente", "description": "nada"},
     )
     assert response.status_code == 404
     assert response.json()["detail"] == f"O ID {missing_id} não foi encontrado"
+    after = client.get("/tarefas")
+    assert after.status_code == 200
+    assert after.json() == before.json()
+    missing = client.get("/tarefas/" + str(missing_id))
+    assert missing.status_code == 404
 
 
 def test_put_omitting_title_returns_422_and_keeps_row(client):
@@ -346,12 +353,19 @@ def test_patch_other_status_returns_422_and_keeps_row(client):
 
 def test_patch_missing_id_returns_404(client):
     missing_id = 2147483645
+    before = client.get("/tarefas")
+    assert before.status_code == 200
     response = client.patch(
         "/tarefas/" + str(missing_id) + "/status",
         json={"status": "concluido"},
     )
     assert response.status_code == 404
     assert response.json()["detail"] == f"O ID {missing_id} não foi encontrado"
+    after = client.get("/tarefas")
+    assert after.status_code == 200
+    assert after.json() == before.json()
+    missing = client.get("/tarefas/" + str(missing_id))
+    assert missing.status_code == 404
 
 
 def test_delete_existing_task_returns_message_and_get_is_404(client):
