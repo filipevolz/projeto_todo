@@ -132,9 +132,9 @@ T12
 
 **Done when**:
 
-- [ ] `.env.example` contains the key `DATABASE_URL`
-- [ ] The file contains no `@` userinfo and no live password
-- [ ] Gate check passes: `python3 -m compileall -q main.py`
+- [x] `.env.example` contains the key `DATABASE_URL`
+- [x] The file contains no `@` userinfo and no live password
+- [x] Gate check passes: `python3 -m compileall -q main.py`
 
 **Tests**: none
 **Gate**: build
