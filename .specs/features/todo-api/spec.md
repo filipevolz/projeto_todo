@@ -201,9 +201,9 @@ O CRUD em `main.py` guarda tarefas numa lista em memória e só existe como menu
 | TODO-04 | P1: Criar tarefa | Tasks | Done |
 | TODO-05 | P1: Criar tarefa | Tasks | Done |
 | TODO-06 | P1: Criar tarefa | Tasks | Done |
-| TODO-07 | P1: Listar tarefas | Tasks | In Tasks |
-| TODO-08 | P1: Listar tarefas | Tasks | In Tasks |
-| TODO-09 | P1: Listar tarefas | Tasks | In Tasks |
+| TODO-07 | P1: Listar tarefas | Tasks | Done |
+| TODO-08 | P1: Listar tarefas | Tasks | Done |
+| TODO-09 | P1: Listar tarefas | Tasks | Done |
 | TODO-10 | P1: Buscar tarefa | Tasks | In Tasks |
 | TODO-11 | P1: Buscar tarefa | Tasks | In Tasks |
 | TODO-12 | P1: Buscar tarefa | Tasks | In Tasks |
@@ -217,7 +217,7 @@ O CRUD em `main.py` guarda tarefas numa lista em memória e só existe como menu
 | TODO-20 | P1: Alterar status | Tasks | In Tasks |
 | TODO-21 | P1: Apagar tarefa | Tasks | In Tasks |
 | TODO-22 | P1: Apagar tarefa | Tasks | In Tasks |
-| TODO-23 | P1: Persistência e falha do banco | Tasks | In Tasks |
+| TODO-23 | P1: Persistência e falha do banco | Tasks | Done |
 | TODO-24 | P1: Persistência e falha do banco | Tasks | Done |
 | TODO-25 | P1: Persistência e falha do banco | Tasks | In Tasks |
 | TODO-26 | P2: Operador sobe a API | Tasks | Done |

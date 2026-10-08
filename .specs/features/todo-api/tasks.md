@@ -216,12 +216,12 @@ T12
 
 **Done when**:
 
-- [ ] `GET /tarefas` with no rows returns 200 and `[]`
-- [ ] Rows come back ordered by `id` ascending
-- [ ] A second client sees a task created by the first request
-- [ ] The module does not keep a process-memory task list
-- [ ] Gate check passes: `python3 -m pytest -q`
-- [ ] Test count: 12 tests pass (no silent deletions)
+- [x] `GET /tarefas` with no rows returns 200 and `[]`
+- [x] Rows come back ordered by `id` ascending
+- [x] A second client sees a task created by the first request
+- [x] The module does not keep a process-memory task list
+- [x] Gate check passes: `python3 -m pytest -q`
+- [x] Test count: 12 tests pass (no silent deletions)
 
 **Tests**: integration
 **Gate**: full

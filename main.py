@@ -71,3 +71,17 @@ def criar_tarefa(body: TarefaCreate, connection=Depends(get_connection)):
     row = cursor.fetchone()
     cursor.close()
     return serialize(row)
+
+
+@app.get("/tarefas")
+def listar_tarefas(connection=Depends(get_connection)):
+    cursor = connection.execute(
+        """
+        SELECT id, title, description, status, created_at, updated_at
+        FROM tarefas
+        ORDER BY id ASC
+        """
+    )
+    rows = cursor.fetchall()
+    cursor.close()
+    return [serialize(row) for row in rows]

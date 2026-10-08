@@ -33,6 +33,7 @@ def load_env():
 load_env()
 
 import db  # noqa: E402
+import main  # noqa: E402
 from main import app, get_connection  # noqa: E402
 
 
@@ -124,6 +125,51 @@ def test_post_description_longer_than_2000_returns_422(client):
         json={"title": "limite", "description": "d" * 2001},
     )
     assert response.status_code == 422
+
+
+def test_get_tarefas_empty_returns_empty_array(client):
+    response = client.get("/tarefas")
+    assert response.status_code == 200
+    assert response.json() == []
+
+
+def test_get_tarefas_returns_every_row_ordered_by_id(client):
+    first = client.post(
+        "/tarefas", json={"title": "primeira", "description": "a"}
+    )
+    second = client.post(
+        "/tarefas", json={"title": "segunda", "description": "b"}
+    )
+    assert first.status_code == 201
+    assert second.status_code == 201
+    response = client.get("/tarefas")
+    assert response.status_code == 200
+    body = response.json()
+    assert [row["id"] for row in body] == [first.json()["id"], second.json()["id"]]
+    assert body[0]["id"] < body[1]["id"]
+    assert [row["id"] for row in body] == sorted(row["id"] for row in body)
+    assert body[0]["title"] == "primeira"
+    assert body[1]["title"] == "segunda"
+    assert body[0]["description"] == "a"
+    assert body[1]["description"] == "b"
+
+
+def test_second_client_sees_task_from_the_database(client):
+    created = client.post(
+        "/tarefas", json={"title": "persistida", "description": "no banco"}
+    )
+    assert created.status_code == 201
+    task = created.json()
+    with TestClient(app) as other:
+        listed = other.get("/tarefas")
+    assert listed.status_code == 200
+    match = next(row for row in listed.json() if row["id"] == task["id"])
+    assert match["title"] == "persistida"
+    assert match["description"] == "no banco"
+    assert match["status"] == "pendente"
+    assert match["id"] == task["id"]
+    assert not hasattr(main, "lista_de_tarefas")
+    assert not any(isinstance(value, list) for value in vars(main).values())
 
 
 def test_import_does_not_read_stdin_or_print_menu():
