@@ -9,3 +9,6 @@ env/
 
 # Configurações do VS Code
 .vscode/
+
+# Credenciais do banco
+.env

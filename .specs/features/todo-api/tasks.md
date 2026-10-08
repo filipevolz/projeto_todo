@@ -106,9 +106,9 @@ T12
 
 **Done when**:
 
-- [ ] `.gitignore` contains `.env`
-- [ ] `git check-ignore -q .env` exits 0
-- [ ] Gate check passes: `python3 -m compileall -q main.py`
+- [x] `.gitignore` contains `.env`
+- [x] `git check-ignore -q .env` exits 0
+- [x] Gate check passes: `python3 -m compileall -q main.py`
 
 **Tests**: none
 **Gate**: build
