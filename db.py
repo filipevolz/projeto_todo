@@ -1,22 +1,31 @@
 import os
 
 import psycopg
+from psycopg.rows import dict_row
 
-CREATE_TAREFAS = """
-CREATE TABLE IF NOT EXISTS tarefas (
-    id serial PRIMARY KEY,
-    title text NOT NULL,
-    description text NOT NULL DEFAULT '',
-    status text NOT NULL DEFAULT 'pendente'
-        CHECK (status IN ('pendente', 'concluido')),
-    created_at timestamptz NOT NULL DEFAULT now(),
-    updated_at timestamptz NOT NULL DEFAULT now()
-)
-"""
+
+class DatabaseUnavailable(Exception):
+    pass
 
 
 def connect():
-    connection = psycopg.connect(os.environ["DATABASE_URL"])
-    connection.execute(CREATE_TAREFAS)
-    connection.commit()
-    return connection
+    return psycopg.connect(os.environ["DATABASE_URL"])
+
+
+def get_connection():
+    try:
+        connection = connect()
+    except psycopg.Error as exc:
+        raise DatabaseUnavailable from exc
+    connection.row_factory = dict_row
+    try:
+        yield connection
+        connection.commit()
+    except psycopg.Error as exc:
+        connection.rollback()
+        raise DatabaseUnavailable from exc
+    except Exception:
+        connection.rollback()
+        raise
+    finally:
+        connection.close()
