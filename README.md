@@ -1,24 +1,38 @@
-# To-Do List CLI em Python 📝
+# To-Do List API
 
-Aplicação de gerenciamento de tarefas via terminal (CLI) desenvolvida em Python para praticar os conceitos fundamentais de operações CRUD (Create, Read, Update, Delete).
+API HTTP para criar, listar, buscar, atualizar, mudar o status e apagar tarefas no Postgres.
 
-## 🚀 Funcionalidades
+## Como executar
 
-- **Criar Tarefa (`POST`)**: Adiciona uma nova tarefa com título, descrição e timestamps.
-- **Listar Tarefas (`GET`)**: Exibe todas as tarefas cadastradas.
-- **Buscar por ID (`GET`)**: Localiza uma tarefa específica pelo seu identificador.
-- **Atualizar Tarefa (`PUT`)**: Permite alterar o título e a descrição de uma tarefa.
-- **Alterar Status (`PATCH`)**: Atualiza o status da tarefa (ex: `pendente` -> `concluído`).
-- **Deletar Tarefa (`DELETE`)**: Remove uma tarefa da memória.
+1. Instale as dependências:
 
-## 🛠️ Tecnologias Utilizadas
-
-- **Python 3.x**
-- Módulo nativo `datetime`
-
-## ⚙️ Como Executar o Projeto
-
-1. Clone o repositório:
    ```bash
-   git clone [https://github.com/janiersoares/projeto_todo.git]
-   (https://github.com/janiersoares/projeto_todo.git)
+   python3 -m venv venv
+   source venv/bin/activate
+   pip install -r requirements.txt
+   ```
+
+2. Exporte `DATABASE_URL` com a connection string do banco. O arquivo `.env.example` tem o placeholder da variável. Se a variável não estiver no ambiente, `python migrate.py` lê o arquivo `.env`.
+
+3. Aplique as migrations:
+
+   ```bash
+   python migrate.py
+   ```
+
+4. Suba o servidor:
+
+   ```bash
+   uvicorn main:app
+   ```
+
+## Rotas
+
+- `POST /tasks`
+- `GET /tasks`
+- `GET /tasks/{id}`
+- `PUT /tasks/{id}`
+- `PATCH /tasks/{id}/status`
+- `DELETE /tasks/{id}`
+
+O status de uma tarefa é `pending` ou `completed`.
